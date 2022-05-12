@@ -27,19 +27,28 @@ def run():
     assert_in_legislacoes_page()
 
     # update all legislacoes from page
-    i = 0
     while(True):
+        i = 0
+        while(True):
 
+            assert_in_legislacoes_page()
+            legislacoes = find_elements(
+                By.CSS_SELECTOR, '#_com_liferay_journal_web_portlet_JournalPortlet_articlesSearchContainer > div.table-responsive > table > tbody > tr.entry-display-style')
+
+            if (i >= len(legislacoes)):
+                break
+
+            update_legislacao(legislacoes[i])
+
+            i += 1
+        
         assert_in_legislacoes_page()
-        legislacoes = find_elements(
-            By.CSS_SELECTOR, '#_com_liferay_journal_web_portlet_JournalPortlet_articlesSearchContainer > div.table-responsive > table > tbody > tr.entry-display-style')
 
-        if (i >= len(legislacoes)):
+        next_page_button = find_element(By.CSS_SELECTOR, '#_com_liferay_journal_web_portlet_JournalPortlet_articlesPageIteratorBottom > ul > li:last-child')
+        if not 'disabled' in next_page_button.get_attribute('class'):
+            next_page_button.find_element(By.CSS_SELECTOR, 'a.page-link').click()
+        else:
             break
-
-        update_legislacao(legislacoes[i])
-
-        i += 1
 
 
 def login():
@@ -124,7 +133,13 @@ def find_element(by, value):
         element_present = EC.presence_of_element_located((by, value))
         WebDriverWait(driver, timeout).until(element_present)
 
-        return driver.find_element(by, value)
+        try:
+            element = driver.find_element(by, value)
+            element.text # validate element
+            return element
+        
+        except: # try again
+            return driver.find_element(by, value)
     except TimeoutException:
         print("Timed out waiting for page to load")
 
