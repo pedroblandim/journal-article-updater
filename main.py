@@ -46,7 +46,8 @@ def run():
 
         next_page_button = find_element(By.CSS_SELECTOR, '#_com_liferay_journal_web_portlet_JournalPortlet_articlesPageIteratorBottom > ul > li:last-child')
         if not 'disabled' in next_page_button.get_attribute('class'):
-            next_page_button.find_element(By.CSS_SELECTOR, 'a.page-link').click()
+            next_page_button.find_element(By.CSS_SELECTOR, 'a.page-link')
+            driver.execute_script("arguments[0].click();", next_page_button.find_element(By.CSS_SELECTOR, 'a.page-link'))
         else:
             break
 
@@ -74,6 +75,9 @@ def login():
 def update_legislacao(legislacao):
     legislacao_link = legislacao.find_element(
         By.CSS_SELECTOR, 'td:nth-child(2) > a')
+    
+    # execute script because sometimes this element is behind some 
+    # other element making it not clickable
     driver.execute_script("arguments[0].click();", legislacao_link)
 
     assertInLegislacaoPage()

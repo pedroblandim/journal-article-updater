@@ -1,6 +1,6 @@
 env/
 .env
-legislacoes-not-updated-DEV.txt
+legislacoes-not-updated-*.txt
 *driver.exe
 
 # Created by https://www.toptal.com/developers/gitignore/api/pythonvanilla
