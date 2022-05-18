@@ -17,14 +17,13 @@ from urllib.parse import urlencode
 timeout = 7
 delta = 2
 initial_result = 0
-inital_page = 0
+inital_page = 1
 
 def run():
+    login(os.environ['login_url'])
+
     url = set_query_params(os.environ['url'])
     driver.get(url)
-
-    login()
-
     # update all legislacoes from page
     while(True):
         i = initial_result
@@ -63,8 +62,9 @@ def run():
             break
 
 
-def login():
-    if '/web/guest/login' in driver.current_url:
+def login(url):
+    driver.get(url)
+    if '/login' in driver.current_url:
         login = driver.find_element(
             By.ID, '_com_liferay_login_web_portlet_LoginPortlet_login')
         pwd = driver.find_element(
@@ -81,6 +81,9 @@ def login():
             remember_me.click()
 
         pwd.send_keys(Keys.RETURN)
+        
+        driver.get(url)
+    
 
 
 def update_legislacao(legislacao):
